@@ -1,48 +1,55 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {selectUser} from '../actions/index'
+import {selectUser} from '../actions/index';
 
 
 class UserList extends Component {
 
-    renderList() {
-        return this.props.users.map((user) => {
-            return (
-                <li
-                    key={user.id}
-                    onClick={() => this.props.selectUser(user)}
-                >
-                    {user.first} {user.last}
-                </li>
-            );
-        });
-    }
+createListItems () {
+   return this.props.users.map((user) => {
+     return(
+       <li
+       key={user.id}
+       onClick={() => {this.props.selectUser(user)}}
+        >
+        {user.first} {user.last} </li>
+     );
+   });
+}
 
-    render() {
-        return (
-            <ul>
-                {this.renderList()}
-            </ul>
-        );
-    }
+createBookList(){
+  return this.props.books.map((book) => {
+    return (
+      <li key={book.id}> {book.name} </li>
+    );
+  });
+}
+
+render()
+{
+  return(
+    <ul>
+    {this.createListItems()}
+    {this.createBookList()}
+    </ul>
+  );
+}
 
 }
 
-// Get apps state and pass it as props to UserList
-//      > whenever state changes, the UserList will automatically re-render
-function mapStateToProps(state) {
-    return {
-        users: state.users
-    };
+// this function will take the part of the store we want and map them  to the props of the component
+function mapStateToProps(state){
+  return {
+    users: state.users,
+    books: state.books
+  };
 }
 
-// Get actions and pass them as props to to UserList
-//      > now UserList has this.props.selectUser
-function matchDispatchToProps(dispatch){
-    return bindActionCreators({selectUser: selectUser}, dispatch);
+//this is where we connect ations with components
+//create a props called selectUser to be equile to the action selectUser
+function matchDispatachToProps(dispatch){
+  return bindActionCreators({selectUser: selectUser}, dispatch);
 }
-
-// We don't want to return the plain UserList (component) anymore, we want to return the smart Container
-//      > UserList is now aware of state and actions
-export default connect(mapStateToProps, matchDispatchToProps)(UserList);
+// now we connect them with the component
+export default connect(mapStateToProps,matchDispatachToProps)(UserList);
